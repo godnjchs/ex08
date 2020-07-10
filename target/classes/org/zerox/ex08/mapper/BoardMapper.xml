@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerox.ex08.mapper.BoardMapper">
+	<select id="getList" resultType="org.zerox.ex08.domain.BoardVo">
+	<![CDATA[
+		select * from tb1_board where bno > 0
+		]]>
+	</select>	
+	
+	<insert id="insert">
+		insert into tb1_board (bno,title,content,writer) values(seq_board.nextVal,#{title},#{content},#{writer})
+	</insert>
+	
+	<select id="getOne" resultType="org.zerox.ex08.domain.BoardVo">
+		select * from tb1_board where bno = #{bno}
+	</select>
+	
+	<delete id="delete">
+		delete tb1_board where bno = #{bno}
+	</delete>
+	
+	<update id="update" >
+		update tb1_board set
+		title = #{title},
+		content = #{content},
+		writer = #{writer},
+		updateDate = sysdate
+		where bno = #{bno}
+		
+		
+		
+	</update>
+	
+	
+	<select id="getListWithCriteria" resultType="org.zerox.ex08.domain.BoardVo">
+	 	<![CDATA[
+			select * from 
+				(select 
+					/*+ index_asc(tb1_board pk_board_bno)*/
+						rownum as rm,title,content,writer,bno from tb1_board)
+				where rm < #{pageNum} * #{amount} and rm > (#{pageNum}-1) * #{amount}
+		]]>
+	</select>
+	
+</mapper>
